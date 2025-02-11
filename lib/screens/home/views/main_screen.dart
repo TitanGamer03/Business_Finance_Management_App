@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:business_finance_management_apk/data/data.dart';
 import 'package:flutter/material.dart';
 
 class MainScreen extends StatelessWidget{
@@ -179,7 +180,7 @@ class MainScreen extends StatelessWidget{
 
             Expanded(
               child: ListView.builder(
-                itemCount: 3,
+                itemCount: myTransactionData.length,
                 itemBuilder: (context, int i){
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 16.0),
@@ -192,21 +193,44 @@ class MainScreen extends StatelessWidget{
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.yellow,
-                              ),
+                            Row(
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Container(
+                                      width: 50,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: myTransactionData[i]['color'],
+                                      ),
+                                    ),
+
+                                    myTransactionData[i]['icon'],
+                                  ],
+                                ),
+
+                                SizedBox(width: 12,),
+
+                                Text(myTransactionData[i]['name'], style: TextStyle( fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),),
+                              ],
                             ),
 
-                            SizedBox(width: 12,),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(myTransactionData[i]['totalAmount'], style: TextStyle( fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black),),
 
-                            Text("Food", style: TextStyle( fontSize: 14, fontWeight: FontWeight.w500, color: Colors.black),),
+                                Text(myTransactionData[i]['date'], style: TextStyle( fontSize: 14, fontWeight: FontWeight.w400, color: Colors.black),),
+                              ],
+                            ),
+
                           ],
                         ),
+
                       ),
                     ),
                   );
