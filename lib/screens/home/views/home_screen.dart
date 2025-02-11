@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:business_finance_management_apk/screens/stats/stats.dart';
 import 'package:flutter/material.dart';
 
+import '../../addExpanse/views/addExpnse.dart';
 import 'main_screen.dart';
 
 class HomeScreen extends StatefulWidget{
@@ -51,7 +52,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: (){},
+        onPressed: (){
+          Navigator.push(
+            context,
+            MaterialPageRoute<void> (builder: (BuildContext context) => const AddExpanse(),
+            ),
+          );
+        },
         shape: CircleBorder(),
         child: Container(
           width: 60,
