@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:business_finance_management_apk/screens/stats/stats.dart';
 import 'package:flutter/material.dart';
 
-import '../../addExpanse/views/addExpnse.dart';
+import '../../addExpanse/views/add_expanse.dart';
 import 'main_screen.dart';
 
 class HomeScreen extends StatefulWidget{
