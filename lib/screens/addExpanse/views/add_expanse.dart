@@ -1,16 +1,16 @@
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 
-class AddExpanse extends StatefulWidget {
-  const AddExpanse({super.key});
+class AddExpense extends StatefulWidget {
+  const AddExpense({super.key});
 
   @override
-  State<AddExpanse> createState() => _AddExpanseState();
+  State<AddExpense> createState() => _AddExpenseState();
 }
 
-class _AddExpanseState extends State<AddExpanse> {
+class _AddExpenseState extends State<AddExpense> {
 
-  bool isExpanded = false;
   DateTime selectDate = DateTime.now();
   TextEditingController expanseController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
@@ -35,7 +35,7 @@ class _AddExpanseState extends State<AddExpanse> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-          backgroundColor: Theme.of(context).colorScheme.surface,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(
           title: Text("Add Expanse"),
           centerTitle: true,
@@ -52,13 +52,13 @@ class _AddExpanseState extends State<AddExpanse> {
                   controller: expanseController,
                   textAlignVertical: TextAlignVertical.center,
                   decoration: InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white,
-                    prefixIcon: Icon(Icons.currency_rupee, color: Colors.grey, size: 20,),
-                    border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                      borderSide: BorderSide.none,
-                    )
+                      filled: true,
+                      fillColor: Colors.white,
+                      prefixIcon: Icon(Icons.currency_rupee, color: Colors.grey, size: 20,),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        borderSide: BorderSide.none,
+                      )
                   ),
                 ),
               ),
@@ -66,9 +66,7 @@ class _AddExpanseState extends State<AddExpanse> {
               SizedBox(height: 30,),
               TextFormField(
                 readOnly: true,
-                onTap: (){
-
-                },
+                onTap: (){},
                 controller: categoryController,
                 textAlignVertical: TextAlignVertical.center,
                 decoration: InputDecoration(
@@ -84,94 +82,181 @@ class _AddExpanseState extends State<AddExpanse> {
                     icon: Icon(Icons.add),
                     color: Colors.grey,
                     onPressed: (){
+                      String iconSelected = "";
+                      Color categoryColor = Colors.white;
                       showDialog(
                         context: context,
                         builder: (ctx){
                           bool isExpanded = false;
-                          return AlertDialog(
-                            title: const Text("Create Category"),
-                            content: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextFormField(
-                                  // controller: dateController,
-                                  textAlignVertical: TextAlignVertical.center,
-                                  decoration: InputDecoration(
-                                    isDense: true,
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    hintText: "Name",
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-
-                                SizedBox(height: 15,),
-                                TextFormField(
-                                  readOnly: true,
-                                  onTap: (){
-                                    setState(() {
-                                      isExpanded = !isExpanded;
-                                    });
-                                  },
-                                  textAlignVertical: TextAlignVertical.center,
-                                  decoration: InputDecoration(
-                                    isDense: true,
-                                    filled: true,
-                                    suffix: IconButton(icon: Icon(Icons.keyboard_arrow_down), onPressed: (){
-                                      setState(() {
-                                        isExpanded = !isExpanded;
-                                      });
-                                    },),
-                                    fillColor: Colors.white,
-                                    hintText: "Icon",
-                                    border: OutlineInputBorder(
-                                      borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
-                                      borderSide: BorderSide.none,
-                                    ),
-                                  ),
-                                ),
-
-                                isExpanded ? Container(
-                                  width: double.infinity,
-                                  height: 200,
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
-                                  ),
-                                  child: ListView.builder(
-                                    itemCount: iconList.length,
-                                    itemBuilder: (context, int i) {
-                                      return Container(
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: AssetImage(iconList[i]),
+                          return StatefulBuilder(
+                            builder: (context, setState) {
+                              return AlertDialog(
+                                title: const Text("Create Category"),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width,
+                                      child: TextFormField(
+                                        textAlignVertical: TextAlignVertical.center,
+                                        decoration: InputDecoration(
+                                          isDense: true,
+                                          filled: true,
+                                          fillColor: Colors.white,
+                                          hintText: "Name",
+                                          border: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(10),
+                                            borderSide: BorderSide.none,
                                           ),
                                         ),
-                                      );
-                                    },
-                                  ),
-                                ) : Container(),
-
-                                SizedBox(height: 15,),
-                                TextFormField(
-                                  // controller: dateController,
-                                  textAlignVertical: TextAlignVertical.center,
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    isDense: true,
-                                    fillColor: Colors.white,
-                                    hintText: "Color",
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      borderSide: BorderSide.none,
+                                      ),
                                     ),
-                                  ),
+
+                                    SizedBox(height: 15,),
+                                    TextFormField(
+                                      readOnly: true,
+                                      onTap: () {
+                                        setState(() {
+                                          isExpanded = !isExpanded;
+                                        });
+                                      },
+                                      textAlignVertical: TextAlignVertical.center,
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        filled: true,
+                                        suffix: Icon(Icons.keyboard_arrow_down),
+                                        fillColor: Colors.white,
+                                        hintText: "Icon",
+                                        border: OutlineInputBorder(
+                                          borderRadius: isExpanded
+                                            ? const BorderRadius.vertical(top: Radius.circular(15)) : BorderRadius.circular(15),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                      ),
+                                    ),
+
+                                    isExpanded
+                                      ? Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        height: 200,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+                                        ),
+                                      child: Padding(
+                                      padding: const EdgeInsets.all(10.0),
+                                      child: GridView.builder(
+                                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          mainAxisSpacing: 5,
+                                          crossAxisSpacing: 5
+                                        ),
+                                        itemCount: iconList.length,
+                                        itemBuilder: (context, int i) {
+                                          return GestureDetector(
+                                            onTap: (){
+                                              setState((){
+                                                iconSelected = iconList[i];
+                                              });
+                                            },
+                                            child: Container(
+                                              width: 40,
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                  width: 3,
+                                                  color: iconSelected == iconList[i] ? Colors.green : Colors.grey
+                                                ),
+                                                borderRadius: BorderRadius.circular(10),
+                                                image: DecorationImage(
+                                                  image: AssetImage(iconList[i]),
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  )
+                                  : Container(),
+
+                                    SizedBox(height: 15,),
+                                    TextFormField(
+                                      readOnly: true,
+                                      onTap: (){
+                                        showDialog(
+                                          context: context,
+                                          builder: (ctx2){
+                                            // categoryColor = Colors.blue;
+                                            return AlertDialog(
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  ColorPicker(
+                                                    pickerColor: Colors.white,
+                                                    onColorChanged: (value){
+                                                      setState((){
+                                                        categoryColor = value;
+                                                      });
+                                                    },
+                                                  ),
+
+                                                  SizedBox(
+                                                    height: 50,
+                                                    width: double.infinity,
+                                                    child: TextButton(
+                                                      style: TextButton.styleFrom(
+                                                        backgroundColor: Colors.black,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(10)
+                                                        )
+                                                      ),
+                                                      onPressed: (){
+                                                        Navigator.of(ctx2).pop();
+                                                      },
+                                                      child: Text("Add", style: TextStyle(color: Colors.white, fontSize: 25),),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          }
+                                        );
+                                      },
+                                      textAlignVertical: TextAlignVertical.center,
+                                      decoration: InputDecoration(
+                                        filled: true,
+                                        isDense: true,
+                                        fillColor: categoryColor,
+                                        hintText: "Color",
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                          borderSide: BorderSide.none,
+                                        ),
+                                      ),
+                                    ),
+
+                                    SizedBox(height: 15,),
+                                    SizedBox(
+                                      height: kToolbarHeight,
+                                      width: double.infinity,
+                                      child: TextButton(
+                                        style: TextButton.styleFrom(
+                                            backgroundColor: Colors.black,
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(10)
+                                            )
+                                        ),
+                                        onPressed: (){
+                                          Navigator.of(ctx).pop();
+                                        },
+                                        child: Text("Add", style: TextStyle(color: Colors.white, fontSize: 25),),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              );
+                            }
                           );
                         }
                       );
