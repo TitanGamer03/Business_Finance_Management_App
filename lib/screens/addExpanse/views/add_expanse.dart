@@ -212,6 +212,7 @@ class _AddExpenseState extends State<AddExpense> {
                                                         )
                                                       ),
                                                       onPressed: (){
+
                                                         Navigator.of(ctx2).pop();
                                                       },
                                                       child: Text("Add", style: TextStyle(color: Colors.white, fontSize: 25),),
