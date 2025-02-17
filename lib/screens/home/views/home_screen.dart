@@ -1,7 +1,10 @@
 import 'dart:math';
 import 'package:business_finance_management_apk/screens/stats/stats.dart';
+import 'package:expense_repository/expense_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../addExpanse/blocs/create_categorybloc/create_category_bloc.dart';
 import '../../addExpanse/views/add_expanse.dart';
 import 'main_screen.dart';
 
@@ -55,7 +58,11 @@ class _HomeScreenState extends State<HomeScreen> {
         onPressed: (){
           Navigator.push(
             context,
-            MaterialPageRoute<void> (builder: (BuildContext context) => const AddExpense(),
+            MaterialPageRoute<void> (builder: (BuildContext context) => BlocProvider(
+              create: (context) => CreateCategoryBloc(FirebaseExpenseRepo()
+              ),
+              child: const AddExpense()
+            ),
             ),
           );
         },

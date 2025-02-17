@@ -1,6 +1,10 @@
+import 'package:expense_repository/expense_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
+import '../blocs/create_categorybloc/create_category_bloc.dart';
 
 class AddExpense extends StatefulWidget {
   const AddExpense({super.key});
@@ -82,22 +86,33 @@ class _AddExpenseState extends State<AddExpense> {
                     icon: Icon(Icons.add),
                     color: Colors.grey,
                     onPressed: (){
-                      String iconSelected = "";
-                      Color categoryColor = Colors.white;
                       showDialog(
                         context: context,
                         builder: (ctx){
                           bool isExpanded = false;
-                          return StatefulBuilder(
-                            builder: (context, setState) {
-                              return AlertDialog(
+                          Color categoryColor = Colors.white;
+                          String iconSelected = "";
+                          TextEditingController categoryNameController = TextEditingController();
+                          TextEditingController categoryIconController = TextEditingController();
+                          TextEditingController categoryColorController = TextEditingController();
+                          return BlocProvider.value(
+                            value: context.read<CreateCategoryBloc>(),
+                            child: BlocListener<CreateCategoryBloc, CreateCategoryState>(
+                              listener: (context, state){
+                                if(state is CreateCategorySuccess){
+                                Navigator.of(ctx).pop();
+                                }
+                              },
+                              child: AlertDialog(
                                 title: const Text("Create Category"),
                                 content: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     SizedBox(
+                                      // height: 500,
                                       width: MediaQuery.of(context).size.width,
                                       child: TextFormField(
+                                        controller: categoryNameController,
                                         textAlignVertical: TextAlignVertical.center,
                                         decoration: InputDecoration(
                                           isDense: true,
@@ -114,6 +129,7 @@ class _AddExpenseState extends State<AddExpense> {
 
                                     SizedBox(height: 15,),
                                     TextFormField(
+                                      controller: categoryIconController,
                                       readOnly: true,
                                       onTap: () {
                                         setState(() {
@@ -182,12 +198,12 @@ class _AddExpenseState extends State<AddExpense> {
 
                                     SizedBox(height: 15,),
                                     TextFormField(
+                                      controller: categoryColorController,
                                       readOnly: true,
                                       onTap: (){
                                         showDialog(
                                           context: context,
                                           builder: (ctx2){
-                                            // categoryColor = Colors.blue;
                                             return AlertDialog(
                                               content: Column(
                                                 mainAxisSize: MainAxisSize.min,
@@ -215,7 +231,7 @@ class _AddExpenseState extends State<AddExpense> {
 
                                                         Navigator.of(ctx2).pop();
                                                       },
-                                                      child: Text("Add", style: TextStyle(color: Colors.white, fontSize: 25),),
+                                                      child: Text("Save Color", style: TextStyle(color: Colors.white, fontSize: 25),),
                                                     ),
                                                   ),
                                                 ],
@@ -243,21 +259,27 @@ class _AddExpenseState extends State<AddExpense> {
                                       width: double.infinity,
                                       child: TextButton(
                                         style: TextButton.styleFrom(
-                                            backgroundColor: Colors.black,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10)
-                                            )
+                                          backgroundColor: Colors.black,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(10)
+                                          )
                                         ),
                                         onPressed: (){
-                                          Navigator.of(ctx).pop();
+                                          Category category = Category.empty;
+                                          category.categoryId = const Uuid().v1();
+                                          category.name = categoryNameController.text;
+                                          category.icon = iconSelected;
+                                          category.color = categoryColor.toString();
+                                          context.read<CreateCategoryBloc>().add(CreateCategory(category));
+                                          // Navigator.of(ctx).pop();
                                         },
                                         child: Text("Add", style: TextStyle(color: Colors.white, fontSize: 25),),
                                       ),
                                     ),
                                   ],
                                 ),
-                              );
-                            }
+                              ),
+                            ),
                           );
                         }
                       );
