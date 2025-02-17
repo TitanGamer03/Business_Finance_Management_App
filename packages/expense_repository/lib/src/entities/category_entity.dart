@@ -1,14 +1,14 @@
 class CategoryEntity {
   late String categoryId;
   late String name;
-  late int total_expense;
+  late int totalExpense;
   late String icon;
   late String color;
 
   CategoryEntity({
     required this.categoryId,
     required this.name,
-    required this.total_expense,
+    required this.totalExpense,
     required this.icon,
     required this.color
   });
@@ -17,7 +17,7 @@ class CategoryEntity {
     return {
       'categoryId': categoryId,
       'name': name,
-      'total_expense': total_expense,
+      'total_expense': totalExpense,
       'icon': icon,
       'color': color,
     };
@@ -27,7 +27,7 @@ class CategoryEntity {
     return CategoryEntity(
       categoryId: doc['categoryId'],
       name: doc['name'],
-      total_expense: doc['total_expense'],
+      totalExpense: doc['total_expense'],
       icon: doc['name'],
       color: doc['color'],
     );

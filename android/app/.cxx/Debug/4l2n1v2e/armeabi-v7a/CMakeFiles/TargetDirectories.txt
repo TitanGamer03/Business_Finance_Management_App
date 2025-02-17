@@ -1,0 +1,2 @@
+D:/business_finance_management_apk/android/app/.cxx/Debug/4l2n1v2e/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/business_finance_management_apk/android/app/.cxx/Debug/4l2n1v2e/armeabi-v7a/CMakeFiles/rebuild_cache.dir

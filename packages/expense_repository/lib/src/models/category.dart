@@ -3,14 +3,14 @@ import '../entities/category_entity.dart';
 class Category{
   late String categoryId;
   late String name;
-  late int total_expense;
+  late int totalExpense;
   late String icon;
   late String color;
 
   Category({
     required this.categoryId,
     required this.name,
-    required this.total_expense,
+    required this.totalExpense,
     required this.icon,
     required this.color
   });
@@ -18,7 +18,7 @@ class Category{
   static final empty = Category(
     categoryId: '',
     name: '',
-    total_expense: 0,
+    totalExpense: 0,
     icon: '',
     color: ''
   );
@@ -27,7 +27,7 @@ class Category{
     return CategoryEntity(
       categoryId: categoryId,
       name: name,
-      total_expense: total_expense,
+      totalExpense: totalExpense,
       icon: icon,
       color: color
     );
@@ -37,7 +37,7 @@ class Category{
     return Category(
       categoryId: entity.categoryId,
       name: entity.name,
-      total_expense: entity.total_expense,
+      totalExpense: entity.totalExpense,
       icon: entity.icon,
       color: entity.color
     );
