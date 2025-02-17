@@ -104,12 +104,11 @@ class _AddExpenseState extends State<AddExpense> {
                           itemCount: state.categories.length,
                           itemBuilder: (context, int i){
                             String imagePath = state.categories[i].icon;
-                            print(state.categories[i].icon);
                             return Card(
                               child: ListTile(
                                 leading: Image.asset(imagePath),
-                                title: Text("Category"),
-                                tileColor: Colors.red,
+                                title: Text(state.categories[i].name),
+                                tileColor: Color(state.categories[i].color),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                               ),
                             );

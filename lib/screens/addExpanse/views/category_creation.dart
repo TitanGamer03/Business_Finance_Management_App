@@ -43,10 +43,7 @@ getCategoryCreation(BuildContext context){
                   children: [
                     SizedBox(
                       // height: 500,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width,
+                      width: MediaQuery.of(context).size.width,
                       child: TextFormField(
                         controller: categoryNameController,
                         textAlignVertical: TextAlignVertical.center,
@@ -126,6 +123,7 @@ getCategoryCreation(BuildContext context){
                                   borderRadius: BorderRadius.circular(10),
                                   image: DecorationImage(
                                     image: AssetImage(iconList[i]),
+                                    // image: AssetImage('assets/icons/${iconList[i]}'),
                                     // fit: BoxFit.cover
                                   ),
                                 ),
@@ -143,45 +141,46 @@ getCategoryCreation(BuildContext context){
                       readOnly: true,
                       onTap: () {
                         showDialog(
-                            context: context,
-                            builder: (ctx2) {
-                              return AlertDialog(
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ColorPicker(
-                                      pickerColor: Colors.white,
-                                      onColorChanged: (value) {
-                                        setState(() {
-                                          categoryColor = value;
-                                        });
-                                      },
-                                    ),
+                          context: context,
+                          builder: (ctx2) {
+                            return AlertDialog(
+                              content: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ColorPicker(
+                                    pickerColor: Colors.white,
+                                    onColorChanged: (value) {
+                                      setState(() {
+                                        categoryColor = value;
+                                      });
+                                    },
+                                  ),
 
-                                    SizedBox(
-                                      height: 50,
-                                      width: double.infinity,
-                                      child: TextButton(
-                                        style: TextButton.styleFrom(
-                                            backgroundColor: Colors.black,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius
-                                                    .circular(10)
-                                            )
+                                  SizedBox(
+                                    height: 50,
+                                    width: double.infinity,
+                                    child: TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.black,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10)
+                                        )
+                                      ),
+                                      onPressed: () {
+                                        Navigator.of(ctx2).pop();
+                                      },
+                                      child: Text("Save Color",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 25,
                                         ),
-                                        onPressed: () {
-                                          Navigator.of(ctx2).pop();
-                                        },
-                                        child: Text("Save Color",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 25),),
                                       ),
                                     ),
-                                  ],
-                                ),
-                              );
-                            }
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
                         );
                       },
                       textAlignVertical: TextAlignVertical.center,
@@ -202,12 +201,12 @@ getCategoryCreation(BuildContext context){
                       height: kToolbarHeight,
                       width: double.infinity,
                       child: isLoading == true ? Center(
-                          child: CircularProgressIndicator())
-                          : TextButton(
-                        style: TextButton.styleFrom(
+                        child: CircularProgressIndicator())
+                        : TextButton(
+                          style: TextButton.styleFrom(
                             backgroundColor: Colors.black,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
+                              borderRadius: BorderRadius.circular(10)
                             )
                         ),
                         onPressed: () {
@@ -215,9 +214,8 @@ getCategoryCreation(BuildContext context){
                           category.categoryId = const Uuid().v1();
                           category.name = categoryNameController.text;
                           category.icon = iconSelected;
-                          category.color = categoryColor.toString();
-                          context.read<CreateCategoryBloc>().add(
-                              CreateCategory(category));
+                          category.color = categoryColor.value;
+                          context.read<CreateCategoryBloc>().add(CreateCategory(category));
                           // Navigator.of(ctx).pop();
                         },
                         child: Text("Add", style: TextStyle(

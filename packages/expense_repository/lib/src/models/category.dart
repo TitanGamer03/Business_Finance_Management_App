@@ -1,11 +1,11 @@
 import '../entities/category_entity.dart';
 
 class Category{
-  late String categoryId;
-  late String name;
-  late int totalExpense;
-  late String icon;
-  late String color;
+  String categoryId;
+  String name;
+  int totalExpense;
+  String icon;
+  int color;
 
   Category({
     required this.categoryId,
@@ -20,7 +20,7 @@ class Category{
     name: '',
     totalExpense: 0,
     icon: '',
-    color: ''
+    color: 0
   );
 
   CategoryEntity toEntity(){
