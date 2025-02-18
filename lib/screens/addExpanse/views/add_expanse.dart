@@ -36,142 +36,162 @@ class _AddExpenseState extends State<AddExpense> {
           centerTitle: true,
           backgroundColor: Theme.of(context).colorScheme.surface,
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.7,
-                child: TextFormField(
-                  controller: expanseController,
-                  textAlignVertical: TextAlignVertical.center,
-                  decoration: InputDecoration(
-                      filled: true,
-                      fillColor: Colors.white,
-                      prefixIcon: Icon(Icons.currency_rupee, color: Colors.grey, size: 20,),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        borderSide: BorderSide.none,
-                      )
-                  ),
-                ),
-              ),
+        body: BlocBuilder<GetCategoriesBloc, GetCategoriesState>(
+          builder: (context, state) {
+            if(state is GetCategoriesSuccess) {
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width * 0.7,
+                      child: TextFormField(
+                        controller: expanseController,
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            prefixIcon: Icon(
+                              Icons.currency_rupee, color: Colors.grey,
+                              size: 20,),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30),
+                              borderSide: BorderSide.none,
+                            )
+                        ),
+                      ),
+                    ),
 
-              SizedBox(height: 30,),
-              TextFormField(
-                readOnly: true,
-                onTap: (){},
-                controller: categoryController,
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: "Category",
-                  prefixIcon: Icon(
-                    Icons.list,
-                    color: Colors.grey,
-                    size: 20,
-                  ),
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.add),
-                    color: Colors.grey,
-                    onPressed: (){
-                      getCategoryCreation(context);
-                    },
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-                    borderSide: BorderSide.none,
-                  )
-                ),
-              ),
+                    SizedBox(height: 30,),
+                    TextFormField(
+                      readOnly: true,
+                      onTap: () {},
+                      controller: categoryController,
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: "Category",
+                          prefixIcon: Icon(
+                            Icons.list,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.add),
+                            color: Colors.grey,
+                            onPressed: () async {
+                              var newCategory = await getCategoryCreation(context);
+                              print(newCategory);
+                              setState(() {
+                                state.categories.insert(0, newCategory);
+                              });
+                            },
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(10)),
+                            borderSide: BorderSide.none,
+                          )
+                      ),
+                    ),
 
-              Container(
-                height: 200,
-                width: MediaQuery.of(context).size.width,
-                // color: Colors.red,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: BlocBuilder<GetCategoriesBloc, GetCategoriesState>(
-                    builder: (context, state) {
-                      if(state is GetCategoriesSuccess) {
-                        return ListView.builder(
+                    Container(
+                      height: 200,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width,
+                      // color: Colors.red,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.vertical(bottom: Radius
+                            .circular(10)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListView.builder(
                           itemCount: state.categories.length,
-                          itemBuilder: (context, int i){
+                          itemBuilder: (context, int i) {
                             String imagePath = state.categories[i].icon;
                             return Card(
                               child: ListTile(
                                 leading: Image.asset(imagePath),
                                 title: Text(state.categories[i].name),
-                                tileColor: Color(state.categories[i].color),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                tileColor: Color(
+                                    state.categories[i].color),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        10)),
                               ),
                             );
                           },
-                        );
-                      } else {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ),
+                        ),
+                      ),
+                    ),
 
-              SizedBox(height: 15,),
-              TextFormField(
-                controller: dateController,
-                readOnly: true,
-                onTap: ()async{
-                  DateTime? newDate = await showDatePicker(
-                    context: context,
-                    initialDate: selectDate,
-                    firstDate: DateTime.now(),
-                    lastDate: DateTime(2100)
-                  );
-                  if(newDate != null){
-                    setState(() {
-                      dateController.text = DateFormat('dd/MM/yyyy').format(newDate);
-                      selectDate = newDate;
-                    });
-                  }
-                },
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white,
-                  hintText: "Date",
-                  prefixIcon: Icon(Icons.calendar_month, color: Colors.grey, size: 20,),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide.none,
-                  )
-                ),
-              ),
+                    SizedBox(height: 15,),
+                    TextFormField(
+                      controller: dateController,
+                      readOnly: true,
+                      onTap: () async {
+                        DateTime? newDate = await showDatePicker(
+                            context: context,
+                            initialDate: selectDate,
+                            firstDate: DateTime.now(),
+                            lastDate: DateTime(2100)
+                        );
+                        if (newDate != null) {
+                          setState(() {
+                            dateController.text =
+                                DateFormat('dd/MM/yyyy').format(newDate);
+                            selectDate = newDate;
+                          });
+                        }
+                      },
+                      textAlignVertical: TextAlignVertical.center,
+                      decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          hintText: "Date",
+                          prefixIcon: Icon(Icons.calendar_month, color: Colors
+                              .grey, size: 20,),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          )
+                      ),
+                    ),
 
-              SizedBox(height: 30,),
-              SizedBox(
-                height: kToolbarHeight,
-                width: double.infinity,
-                child: TextButton(
-                  style: TextButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)
-                    )
-                  ),
-                  onPressed: (){},
-                  child: Text("Add", style: TextStyle(color: Colors.white, fontSize: 25),),
+                    SizedBox(height: 30,),
+                    SizedBox(
+                      height: kToolbarHeight,
+                      width: double.infinity,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10)
+                            )
+                        ),
+                        onPressed: () {},
+                        child: Text("Add", style: TextStyle(
+                            color: Colors.white, fontSize: 25),),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
-          ),
+              );
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
         ),
       ),
     );

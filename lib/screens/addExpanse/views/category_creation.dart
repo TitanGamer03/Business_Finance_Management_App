@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import '../blocs/create_categorybloc/create_category_bloc.dart';
 
-getCategoryCreation(BuildContext context){
+Future getCategoryCreation(BuildContext context){
   List<String> iconList = [
     'assets/icons/food.png',
     'assets/icons/home.png',
@@ -24,6 +24,7 @@ getCategoryCreation(BuildContext context){
       TextEditingController categoryIconController = TextEditingController();
       TextEditingController categoryColorController = TextEditingController();
       bool isLoading = false;
+      Category category = Category.empty;
       return BlocProvider.value(
         value: context.read<CreateCategoryBloc>(),
         child: StatefulBuilder(
@@ -31,7 +32,7 @@ getCategoryCreation(BuildContext context){
             return BlocListener<CreateCategoryBloc, CreateCategoryState>(
               listener: (context, state) {
                 if (state is CreateCategorySuccess) {
-                  Navigator.of(ctx).pop();
+                  Navigator.pop(ctx, category);
                 } else if (state is CreateCategoryLoading) {
                   isLoading = true;
                 }
@@ -66,7 +67,7 @@ getCategoryCreation(BuildContext context){
                       readOnly: true,
                       onTap: () {
                         setState(() {
-                          isExpanded = true;
+                          isExpanded = !isExpanded;
                         });
                       },
                       textAlignVertical: TextAlignVertical.center,
@@ -169,7 +170,8 @@ getCategoryCreation(BuildContext context){
                                       onPressed: () {
                                         Navigator.of(ctx2).pop();
                                       },
-                                      child: Text("Save Color",
+                                      child: Text(
+                                        "Save Color",
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 25,
@@ -210,16 +212,23 @@ getCategoryCreation(BuildContext context){
                             )
                         ),
                         onPressed: () {
-                          Category category = Category.empty;
-                          category.categoryId = const Uuid().v1();
-                          category.name = categoryNameController.text;
-                          category.icon = iconSelected;
-                          category.color = categoryColor.value;
+                          setState(()
+                            {
+                              category.categoryId = const Uuid().v1();
+                              category.name = categoryNameController.text;
+                              category.icon = iconSelected;
+                              category.color = categoryColor.value;
+                            }
+                          );
                           context.read<CreateCategoryBloc>().add(CreateCategory(category));
-                          // Navigator.of(ctx).pop();
                         },
-                        child: Text("Add", style: TextStyle(
-                            color: Colors.white, fontSize: 25),),
+                        child: Text(
+                          "Add",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25
+                          ),
+                        ),
                       ),
                     ),
                   ],
