@@ -1,3 +1,4 @@
+import 'package:business_finance_management_apk/screens/addExpanse/blocs/create_expense_bloc/create_expense_bloc.dart';
 import 'package:expense_repository/expense_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,52 +20,62 @@ class _AddExpenseState extends State<AddExpense> {
   TextEditingController expenseController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+  bool isLoading = false;
   late Expense expense;
 
   @override
   void initState() {
     dateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
     expense = Expense.empty;
+    expense.expenseId = const Uuid().v1();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
+    return BlocListener<CreateExpenseBloc, CreateExpenseState>(
+  listener: (context, state) {
+    if (state is CreateExpenseSuccess) {
+      Navigator.pop(context);
+    } else if (state is CreateExpenseLoading) {
+      setState(() {
+        isLoading = true;
+      });
+    }
+  },
+  child: GestureDetector(
+    onTap: () => FocusScope.of(context).unfocus(),
+    child: Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: AppBar(
+        title: Text("Add Expanse"),
+        centerTitle: true,
         backgroundColor: Theme.of(context).colorScheme.surface,
-        appBar: AppBar(
-          title: Text("Add Expanse"),
-          centerTitle: true,
-          backgroundColor: Theme.of(context).colorScheme.surface,
-        ),
-        body: BlocBuilder<GetCategoriesBloc, GetCategoriesState>(
-          builder: (context, state) {
-            if(state is GetCategoriesSuccess) {
-              return Padding(
-                padding: const EdgeInsets.all(16.0),
+      ),
+      body: BlocBuilder<GetCategoriesBloc, GetCategoriesState>(
+        builder: (context, state) {
+          if(state is GetCategoriesSuccess) {
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width * 0.7,
+                      width: MediaQuery.of(context).size.width * 0.7,
                       child: TextFormField(
                         controller: expenseController,
                         textAlignVertical: TextAlignVertical.center,
                         decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            prefixIcon: Icon(
-                              Icons.currency_rupee, color: Colors.grey,
-                              size: 20,),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: BorderSide.none,
-                            )
+                          filled: true,
+                          fillColor: Colors.white,
+                          prefixIcon: Icon(
+                            Icons.currency_rupee, color: Colors.grey,
+                            size: 20,),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide.none,
+                          )
                         ),
                       ),
                     ),
@@ -127,13 +138,16 @@ class _AddExpenseState extends State<AddExpense> {
                                     categoryController.text = expense.category.name;
                                   });
                                 },
-                                leading: Image.asset(state.categories[i].icon),
-                                title: Text(state.categories[i].name),
-                                tileColor: Color(
-                                    state.categories[i].color),
+                                leading: state.categories[i].icon.contains("assets/icons/")
+                                  ? Image.asset(state.categories[i].icon)
+                                  : Image.asset("assets/icons/${state.categories[i].icon.toLowerCase()}.png", errorBuilder: (context, error, stackTrace) {
+                                return Icon(Icons.error, color: Colors.red);
+                              }),
+
+                              title: Text(state.categories[i].name),
+                                tileColor: Color(state.categories[i].color),
                                 shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        10)),
+                                  borderRadius: BorderRadius.circular(10)),
                               ),
                             );
                           },
@@ -177,7 +191,9 @@ class _AddExpenseState extends State<AddExpense> {
                     SizedBox(
                       height: kToolbarHeight,
                       width: double.infinity,
-                      child: TextButton(
+                      child:isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : TextButton(
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.black,
                           shape: RoundedRectangleBorder(
@@ -186,9 +202,9 @@ class _AddExpenseState extends State<AddExpense> {
                         ),
                         onPressed: () {
                           setState(() {
-                            expense.expenseId = const Uuid().v1();
-                            expense.amount = expenseController.text as int;
+                            expense.amount = int.parse(expenseController.text);
                           });
+                          context.read<CreateExpenseBloc>().add(CreateExpense(expense));
                         },
                         child: Text(
                           "Add",
@@ -201,15 +217,17 @@ class _AddExpenseState extends State<AddExpense> {
                     ),
                   ],
                 ),
-              );
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-          },
-        ),
+              ),
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+        },
       ),
-    );
+    ),
+  ),
+  );
   }
 }

@@ -7,6 +7,7 @@ part 'create_category_state.dart';
 
 class CreateCategoryBloc extends Bloc<CreateCategoryEvent, CreateCategoryState> {
   final ExpenseRepository expenseRepository;
+
   CreateCategoryBloc(this.expenseRepository) : super(CreateCategoryInitial()) {
     on<CreateCategory>((event, emit) async {
       emit(CreateCategoryLoading());

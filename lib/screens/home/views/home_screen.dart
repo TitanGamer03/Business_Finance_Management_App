@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../addExpanse/blocs/create_categorybloc/create_category_bloc.dart';
+import '../../addExpanse/blocs/create_expense_bloc/create_expense_bloc.dart';
 import '../../addExpanse/blocs/get_categories_bloc/get_categories_bloc.dart';
 import '../../addExpanse/views/add_expanse.dart';
 import 'main_screen.dart';
@@ -68,6 +69,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 BlocProvider(
                   create: (context) => GetCategoriesBloc(FirebaseExpenseRepo())..add(GetCategories())
+                ),
+
+                BlocProvider(
+                  create: (context) => CreateExpenseBloc(FirebaseExpenseRepo()
+                  ),
                 ),
               ],
               child: const AddExpense(),
