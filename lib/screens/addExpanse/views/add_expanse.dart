@@ -140,7 +140,7 @@ class _AddExpenseState extends State<AddExpense> {
                                 },
                                 leading: state.categories[i].icon.contains("assets/icons/")
                                   ? Image.asset(state.categories[i].icon)
-                                  : Image.asset("assets/icons/${state.categories[i].icon.toLowerCase()}.png", errorBuilder: (context, error, stackTrace) {
+                                  : Image.asset("assets/icons/${state.categories[i]}.png", errorBuilder: (context, error, stackTrace) {
                                 return Icon(Icons.error, color: Colors.red);
                               }),
 

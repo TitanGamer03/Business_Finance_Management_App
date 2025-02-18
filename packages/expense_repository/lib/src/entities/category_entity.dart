@@ -28,7 +28,7 @@ class CategoryEntity {
       categoryId: doc['categoryId'],
       name: doc['name'],
       totalExpense: doc['total_expense'],
-      icon: doc['name'],
+      icon: doc['icon'],
       color: doc['color'],
     );
   }
