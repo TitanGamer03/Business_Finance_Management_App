@@ -13,21 +13,28 @@ class Expense{
     required this.date,
   });
 
+  static final empty = Expense(
+    expenseId: '',
+    amount: 0,
+    category: Category.empty,
+    date: DateTime.now(),
+  );
+
   ExpenseEntity toEntity(){
     return ExpenseEntity(
-        expenseId: expenseId,
-        category: category,
-        amount: amount,
-        date: date,
+      expenseId: expenseId,
+      category: category,
+      amount: amount,
+      date: date,
     );
   }
 
   static Expense fromEntity(ExpenseEntity entity){
     return Expense(
-        expenseId: entity.expenseId,
-        category: entity.category,
-        amount: entity.amount,
-        date: entity.date,
+      expenseId: entity.expenseId,
+      category: entity.category,
+      amount: entity.amount,
+      date: entity.date,
     );
   }
 }

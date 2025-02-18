@@ -1,6 +1,8 @@
+import 'package:expense_repository/expense_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
 
 import '../blocs/get_categories_bloc/get_categories_bloc.dart';
 import 'category_creation.dart';
@@ -14,14 +16,15 @@ class AddExpense extends StatefulWidget {
 
 class _AddExpenseState extends State<AddExpense> {
 
-  DateTime selectDate = DateTime.now();
-  TextEditingController expanseController = TextEditingController();
+  TextEditingController expenseController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
   TextEditingController dateController = TextEditingController();
+  late Expense expense;
 
   @override
   void initState() {
     dateController.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    expense = Expense.empty;
     super.initState();
   }
 
@@ -50,7 +53,7 @@ class _AddExpenseState extends State<AddExpense> {
                           .size
                           .width * 0.7,
                       child: TextFormField(
-                        controller: expanseController,
+                        controller: expenseController,
                         textAlignVertical: TextAlignVertical.center,
                         decoration: InputDecoration(
                             filled: true,
@@ -73,54 +76,58 @@ class _AddExpenseState extends State<AddExpense> {
                       controller: categoryController,
                       textAlignVertical: TextAlignVertical.center,
                       decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: "Category",
-                          prefixIcon: Icon(
+                        filled: true,
+                        fillColor: expense.category == Category.empty
+                        ? Colors.white
+                        : Color(expense.category.color),
+                        hintText: "Category",
+                        prefixIcon: expense.category == Category.empty
+                          ? const Icon(
                             Icons.list,
                             color: Colors.grey,
                             size: 20,
-                          ),
-                          suffixIcon: IconButton(
-                            icon: Icon(Icons.add),
-                            color: Colors.grey,
-                            onPressed: () async {
-                              var newCategory = await getCategoryCreation(context);
-                              print(newCategory);
-                              setState(() {
-                                state.categories.insert(0, newCategory);
-                              });
-                            },
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(10)),
-                            borderSide: BorderSide.none,
                           )
+                          : Image.asset(expense.category.icon),
+                        suffixIcon: IconButton(
+                          icon: Icon(Icons.add),
+                          color: Colors.grey,
+                          onPressed: () async {
+                            var newCategory = await getCategoryCreation(context);
+                            setState(() {
+                              state.categories.insert(0, newCategory);
+                            });
+                          },
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(10)),
+                          borderSide: BorderSide.none,
+                        )
                       ),
                     ),
 
                     Container(
                       height: 200,
-                      width: MediaQuery
-                          .of(context)
-                          .size
-                          .width,
+                      width: MediaQuery.of(context).size.width,
                       // color: Colors.red,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.vertical(bottom: Radius
-                            .circular(10)),
+                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(10)),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: ListView.builder(
                           itemCount: state.categories.length,
                           itemBuilder: (context, int i) {
-                            String imagePath = state.categories[i].icon;
                             return Card(
                               child: ListTile(
-                                leading: Image.asset(imagePath),
+                                onTap: (){
+                                  setState(() {
+                                    expense.category = state.categories[i];
+                                    categoryController.text = expense.category.name;
+                                  });
+                                },
+                                leading: Image.asset(state.categories[i].icon),
                                 title: Text(state.categories[i].name),
                                 tileColor: Color(
                                     state.categories[i].color),
@@ -140,30 +147,29 @@ class _AddExpenseState extends State<AddExpense> {
                       readOnly: true,
                       onTap: () async {
                         DateTime? newDate = await showDatePicker(
-                            context: context,
-                            initialDate: selectDate,
-                            firstDate: DateTime.now(),
-                            lastDate: DateTime(2100)
+                          context: context,
+                          initialDate: expense.date,
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2100)
                         );
                         if (newDate != null) {
                           setState(() {
                             dateController.text =
-                                DateFormat('dd/MM/yyyy').format(newDate);
-                            selectDate = newDate;
+                              DateFormat('dd/MM/yyyy').format(newDate);
+                            expense.date = newDate;
                           });
                         }
                       },
                       textAlignVertical: TextAlignVertical.center,
                       decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          hintText: "Date",
-                          prefixIcon: Icon(Icons.calendar_month, color: Colors
-                              .grey, size: 20,),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: BorderSide.none,
-                          )
+                        filled: true,
+                        fillColor: Colors.white,
+                        hintText: "Date",
+                        prefixIcon: Icon(Icons.calendar_month, color: Colors.grey, size: 20,),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        )
                       ),
                     ),
 
@@ -173,14 +179,24 @@ class _AddExpenseState extends State<AddExpense> {
                       width: double.infinity,
                       child: TextButton(
                         style: TextButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)
-                            )
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
+                          )
                         ),
-                        onPressed: () {},
-                        child: Text("Add", style: TextStyle(
-                            color: Colors.white, fontSize: 25),),
+                        onPressed: () {
+                          setState(() {
+                            expense.expenseId = const Uuid().v1();
+                            expense.amount = expenseController.text as int;
+                          });
+                        },
+                        child: Text(
+                          "Add",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25,
+                          ),
+                        ),
                       ),
                     ),
                   ],
